@@ -22,29 +22,29 @@
 	</div>
 
 		<div class="row"> 
-			<div class="calc-btn btn-num column" id="calc-seven"> 7 </div>
-			<div class="calc-btn btn-num column" id="calc-eight"> 8 </div>
-			<div class="calc-btn btn-num column" id="calc-nine"> 9 </div>
+			<div class="calc-btn calc-btn-num column" id="calc-seven"> 7 </div>
+			<div class="calc-btn calc-btn-num column" id="calc-eight"> 8 </div>
+			<div class="calc-btn calc-btn-num column" id="calc-nine"> 9 </div>
 			<div class="calc-btn calc-btn-operator column" id="calc-multiply">x </div>
  		</div>
 
 		<div class="row"> 
-			<div class="calc-btn btn-num column" id="calc-four"> 4 </div>
-			<div class="calc-btn btn-num column" id="calc-five"> 5 </div>
-			<div class="calc-btn btn-num column" id="calc-six"> 6 </div>
+			<div class="calc-btn calc-btn-num column" id="calc-four"> 4 </div>
+			<div class="calc-btn calc-btn-num column" id="calc-five"> 5 </div>
+			<div class="calc-btn calc-btn-num column" id="calc-six"> 6 </div>
 			<div class="calc-btn calc-btn-operator column" id="calc-minus"> - </div>
 		</div>
 
 		<div class="row"> 
-			<div class="calc-btn btn-num column" id="calc-one"> 1 </div>
-			<div class="calc-btn btn-num column" id="calc-two"> 2 </div>
-			<div class="calc-btn btn-num column" id="calc-three"> 3 </div>
+			<div class="calc-btn calc-btn-num column" id="calc-one"> 1 </div>
+			<div class="calc-btn calc-btn-num column" id="calc-two"> 2 </div>
+			<div class="calc-btn calc-btn-num column" id="calc-three"> 3 </div>
 			<div class="calc-btn calc-btn-operator column" id="calc-plus"> + </div>
 		</div>
 
 		<div class="row">
-			<div class="calc-btn btn-num column" id="calc-zero"> 0 </div>
-			<div class="calc-btn calc-btn-num btn column" id="calc-decmial"> . </div>
+			<div class="calc-btn calc-btn-num column" id="calc-zero"> 0 </div>
+			<div class="calc-btn column" id="calc-decimal"> . </div>
 			<div class="calc-btn calc-btn-operator column" id="calc-equals">= </div>
 
 		</div>
@@ -72,7 +72,7 @@
 		var evalStringArray = [];
 
 
-		var calcNumBtns = document.getElementsByClassName('calc-btn');
+		var calcNumBtns = document.getElementsByClassName('calc-btn-num');
 		var calcOperatorBtns = document.getElementsByClassName('calc-btn-operator');
 		
 		var updateDisplayVal = function(clickObj) {
@@ -85,14 +85,63 @@
 				displayValElement.innerText = displayVal;	
 		}
 
+		var performOperation = (clickObj) => {
+			var operator = clickObj.target.innerText;
+
+			switch(operator) {
+				case '+':
+					pendingVal = displayVal;
+					displayVal = '0';
+					displayValElement.innerText = displayVal;
+					evalStringArray.push(pendingVal);
+					evalStringArray.push('+');
+					break;
+
+				case '-':
+					pendingVal = displayVal;
+					displayVal = '0';
+					displayValElement.innerText = displayVal;
+					evalStringArray.push(pendingVal);
+					evalStringArray.push('-');
+					break;	
+
+				case 'x':
+				pendingVal = displayVal;
+					displayVal = '0';
+					displayValElement.innerText = displayVal;
+					evalStringArray.push(pendingVal);
+					evalStringArray.push('*');
+					break;
+
+				case '÷':	
+				pendingVal = displayVal;
+					displayVal = '0';
+					displayValElement.innerText = displayVal;
+					evalStringArray.push(pendingVal);
+					evalStringArray.push('/');
+					break;
+
+				case '=':
+				evalStringArray.push(displayVal);
+				var evaluation = eval(evalStringArray.join(''));
+				displayVal = evaluation + ' ';
+				displayValElement.innerText = displayVal;
+				evalStringArray = [];
+				break;
+				default: 
+					break;			
+			}
+
+		}
+
 		for (let i = 0; i < calcNumBtns.length; i ++) {
 			calcNumBtns[i].addEventListener('click', updateDisplayVal, false);
 
 		}
 
-	//	for (let i = 0; i < calcOperatorBtns.length; i ++) {
-	//		calcOperatorBtns[i].addEventListener('click', performOperation, false);
-	//	}
+	for (let i = 0; i < calcOperatorBtns.length; i ++) {
+		calcOperatorBtns[i].addEventListener('click', performOperation, false);
+		}
 		clearBtn.onclick = () => {
 			displayVal = '0';
 			pendingVal = undefined;
@@ -109,9 +158,16 @@
 			if(displayVal === ''){
 				displayVal = '0';
 			
-			
-		return 	displayValElement.innerText = displayVal;
+			displayValElement.innerText = displayVal;
 		}
+	}
+	decimalBtn.onclick = () => {
+		if (! displayVal.includes('.')) {
+			displayVal += '.';
+			displayValElement.innerText = displayVal;
+		}
+		
+
 	}			
 
 
